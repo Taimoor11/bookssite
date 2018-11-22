@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>publishers</h2>
+{% block content %}
+<ul>
+    {% for p in publishers %}
+  <li>{{p.name}}</li>
+  <li>{{p.address}}</li>
+ {% endfor %}
+</ul>
+
+<h2>books</h2>
+
+<ul>
+    {% if books %}
+  <li>{{books.title}}</li>
+  <li>{{books.authors}}</li>
+ {% endif %}
+</ul>
+{% endblock %}
+
+
+</body>
+</html>

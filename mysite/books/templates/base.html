@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" >
+<head >
+  <meta charset="UTF-8" >
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  >
+  <link
+
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+    integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  >
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+  <!-- jQuery library -->
+
+
+  <title >
+    {% block title %}Books{% endblock %}
+  </title>
+  <style >
+    .mymdb-masthead {
+      background-color: #EEEEEE;
+      margin-bottom: 1em;
+    }
+
+    .errorlist {
+      color: #e11;
+    }
+    .movie-image img {
+      max-height: 10em;
+      max-width: 10em;
+    }
+
+    .mymdb-sidebar > div {
+      margin-bottom: 1em;
+    }
+  </style >
+
+</head >
+<body >
+
+
+<div class="mymdb-masthead">
+  <div class="container">
+    <nav class="nav">
+
+      <a
+        class="nav-link"
+        href="{% url 'books:home_page' %}"
+      >
+        Books
+      </a>
+      <a
+        class="nav-link"
+        href="{% url 'books:books_list' %}"
+      >
+        Top 10 Books
+      </a>
+      {% if request.user.is_authenticated %}
+        <a
+            class="nav-link"
+            href="{% url 'logout' %}"
+        >
+          Log out
+        </a>
+      {% else %}
+        <a
+            class="nav-link"
+            href="{% url 'login' %}"
+        >
+          Log in
+        </a>
+        <a
+            class="nav-link"
+            href="{% url 'register' %}"
+        >
+          Register
+        </a>
+
+      {% endif %}
+
+    </nav>
+  </div>
+</div>
+{% block home%}{% endblock %}
+
+{% block container %}
+    <div id="content" class="clearfix container">
+        {% block content %}{% endblock %}
+    </div>
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+   {% load static %}
+   {% block title %}
+     {{ book.category}}
+{% endblock %}
+   {% block main %}
+     <div >
+      <img class="card-img-top" src={{ book.image.url }} alt="Card image cap">
+       <h1>{{ book.title }}</h1>
+         {{ book.level}}
+       {{ book.features|linebreaks }}
+     </div>
+   {% endblock %}

@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load partitions %}
+{% load static %}
+% load utility_tags %}
+
+{% block title %}
+All The Books
+{% endblock %}
+
+{% block main %}
+
+
+<div class="container">
+    <div class="row">
+
+        <div class="row ">
+            <div id="sidebar" class="col-md-4">
+                {% block sidebar %}
+                <div class="filters panel-group" id="accordion">
+                    {% with title="Category" selected=facets.selected.category %}
+                    <div class="panel panel-default">
+                        {% include "books/includes/filter_heading.html" with title=title %}
+                        <div id="collapse-{{ title|slugify }}"
+                             class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <div class="list-group">
+                                    {% include "books/includes/filter_all.html" with param="category" %}
+                                    {% for cat in facets.categories.categories %}
+                                    <a class="list-group-item
+                              {% if selected == cat %}
+                              active{% endif %}"
+                                       href="{% modify_query " page" category=cat.pk %}">
+                                    {{ cat }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                {% with title="Publisher" selected=facets.selected.publisher %}
+                <div class="panel panel-default">
+                    {% include "books/includes/filter_heading.html" with title=title %}
+                    <div id="collapse-{{ title|slugify }}"
+                         class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="list-group">
+                                {% include "books/includes/filter_all.html" with param="publisher" %}
+                                {% for cat in facets.categories.publishers %}
+                                <a class="list-group-item
+                              {% if selected == cat %}
+                              active{% endif %}"
+                                   href="{% modify_query " page" publisher=cat.pk %}">
+                                {{ cat }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                {% with title="Author" selected=facets.selected.Author %}
+                <div class="panel panel-default">
+                    {% include "books/includes/filter_heading.html" with title=title %}
+                    <div id="collapse-{{ title|slugify }}"
+                         class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <div class="list-group">
+                                {% include "books/includes/filter_all.html" with param="author" %}
+                                {% for cat in facets.categories.authors %}
+                                <a class="list-group-item
+                              {% if selected == cat %}
+                              active{% endif %}"
+                                   href="{% modify_query " page" author=cat.pk %}">
+                                {{ cat }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                {% with title="Rating" selected=facets.selected.rating %}
+                <div class="panel panel-default">
+                    {% include "books/includes/filter_heading.html" with title=title %}
+                    <div id="collapse-{{ title|slugify }}"
+                         class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <div class="list-group">
+                                {% include "books/includes/filter_all.html" with param="rating" %}
+                                {% for r_val, r_display in facets.categories.ratings %}
+                                <a class="list-group-item
+                              {% if selected.0 == r_val %}
+                              active{% endif %}"
+                                   href="{% modify_query " page" rating=r_val %}">
+                                {{ r_display }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+            </div>
+            {% endblock %}
+
+        </div>
+    </div>
+
+</div>
+
+{% block content %}
+<div class="movie_list">
+    {% for movie in object_list %}
+    <div class="movie alert alert-info">
+        <p>{{ movie.title }}</p>
+    </div>
+    {% endfor %}
+
+
+    {% endblock %}
+
+
+    <div id="content" class="col-md-8">
+        {% endblock %}
+    </div>
+</div>
+</div>
+<div class="col-md-9">
+
+
+    <div class="col-md-1 ">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort by
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{% url 'books:books_list'%}?sort_order=1">Release Year</a>
+                <a class="dropdown-item" href="{% url 'books:books_list'%}?sort_order=2">type</a>
+                <a class="dropdown-item" href="{% url 'books:books_list'%}?sort_order=3">Title</a>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<div class="row">
+
+
+    <div id="main-card" class="card">
+        {% if error %}
+        <p style="color:red;"> please submit a search term</p>
+        {% endif %}
+        <form action="/searchresult/" method="get">
+            <input type="text" name="q">
+            <input type="submit" value="Search">
+
+        </form>
+
+        {% load partitions %}
+
+
+        <table class="table">
+            {% for row in b1|columns:2 %}
+            <tr>
+                {% for b in row %}
+                <td>
+
+
+                    <div class="card" style="width: 19rem;">
+                        <img class="card-img-top" src={{ b.image.url }} alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{b.title}}</h5>
+
+                            <p class="card-text">{{b.features|truncatechars:90}}</p>
+                            <a href="{{ b.get_absolute_url }}" class="btn btn-primary">detail</a>
+                        </div>
+                    </div>
+
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+
+
+        {% if b1.has_other_pages %}
+        <ul class="pagination">
+            {% if b1.has_previous %}
+            <li><a href="?page={{ b1.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in b1.paginator.page_range %}
+            {% if b1.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if b1.has_next %}
+            <li><a href="?page={{ b1.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+
+        {% endif %}
+
+
+        <div class="feed-post">
+
+
+            {% if books %}
+            <p>you searched for: <strong>{{ query }} </strong></p>
+            <p>Found {{books|length}} book{{ books|pluralize}}.</p>
+
+            <ul>
+
+                {% for books in books%}
+                <tr>
+
+
+                    <div class="card" style="width: 19rem;">
+                        <img class="card-img-top" src={{ books.image.url }} alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{books.title}}</h5>
+
+                            <p class="card-text">{{books.features|truncatechars:90}}</p>
+                            <a href="{{ books.get_absolute_url }}" class="btn btn-info">detail</a>
+                        </div>
+                    </div>
+
+                </tr>
+
+                {% endfor %}
+            </ul>
+
+
+            {% endif %}
+
+        </div>
+
+        {% endblock %}
+

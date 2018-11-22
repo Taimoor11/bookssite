@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+  {{ book}}
+{% endblock %}
+
+{% block main %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="myfile">
+    <button type="submit">Upload</button>
+  </form>
+  <div class="col" >
+    <h1 >{{ book.category}}</h1 >
+    <p class="lead" >
+      {{ book.title}}
+    </p >
+  </div >
+  <ul class="movie-image list-inline" >
+
+
+      <li class="list-inline-item" >
+        <img src="{{ book.image.url }}"    >
+        {{ book.features|truncatewords:30 }}
+      </li >
+
+  </ul >
+  <p >Published
+    by : {{ book.publisher }}</p >
+  <p >Written
+    by {{ book.authors.all|unordered_list }}</p >
+
+{% with comments.count as total_comments %}
+    <h2>
+      {{ total_comments }} comment{{ total_comments|pluralize }}
+    </h2>
+  {% endwith %}
+  {% for comment in comments %}
+    <div class="comment">
+      <p class="info">
+        Comment {{ forloop.counter }} by {{ comment.name }}
+        {{ comment.created }}
+      </p>
+      {{ comment.body|linebreaks }}
+    </div>
+  {% empty %}
+    <p>There are no comments yet.</p>
+  {% endfor %}
+
+  {% if new_comment %}
+    <h2>Your comment has been added.</h2>
+  {% else %}
+    <h2>Add a new comment</h2>
+    <form action="" method="post">
+      {{ comment_form.as_p }}
+      {% csrf_token %}
+      <p><input type="submit" class="btn btn-info btn-value="Add comment" ></p>
+    </form>
+  {% endif %}
+
+{% endblock %}
+
+
+
+{% block sidebar %}
+  <div >
+    This book is published on:
+    <span class="badge badge-primary" >
+      {{ book.publication_date }}
+    </span >
+  </div >
+  {% if image_form %}
+    <div >
+      <h2 >Upload New Image</h2 >
+      <form method="post"
+            enctype="multipart/form-data"
+            action="{% url 'core:MovieImageUpload' movie_id=object.id %}" >
+        {% csrf_token %}
+        {{ image_form.as_p }}
+        <p >
+          <button
+              class="btn btn-primary" >
+            Upload
+          </button >
+        </p >
+      </form >
+    </div >
+  {% endif %}
+  <div >
+    <h2 >
+      {{ book.series|default_if_none:"TBD" }}
+      series
+
+    </h2 >
+    <h2> For {{ book.level }} level </h2>
+  </div >
+  <div >
+
+
+
+  </div >
+{% endblock %}
+
